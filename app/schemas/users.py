@@ -12,13 +12,13 @@ class RoleCreate(RoleBase):
 
 class RoleResponse(RoleBase):
     id: UUID
-    created_at: datetime
-    updated_at: datetime
     
     model_config = ConfigDict(from_attributes=True)
 
 class UserBase(BaseModel):
     username: str
+    email: Optional[str] = None
+    full_name: Optional[str] = None
     role_id: UUID
     is_active: bool = True
 
@@ -27,7 +27,7 @@ class UserCreate(UserBase):
 
 class UserResponse(UserBase):
     id: UUID
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     
     model_config = ConfigDict(from_attributes=True)

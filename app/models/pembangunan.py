@@ -1,26 +1,35 @@
-from sqlalchemy import Column, String, ForeignKey, Text, Date, Numeric
+import uuid
+from sqlalchemy import Column, String, ForeignKey, Text, DateTime, Date, Numeric, Uuid
 from sqlalchemy.orm import relationship
-from app.models.base_model import BaseModel
+from app.database.base import Base
 
-class Pembangunan(BaseModel):
+class Pembangunan(Base):
     __tablename__ = "pembangunan"
 
-    nama_proyek = Column(String(200), nullable=False)
+    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
+    nama_proyek = Column(String(200))
     deskripsi = Column(Text)
+    lokasi = Column(Text)
+    rt_id = Column(ForeignKey("rt.id"))
     anggaran = Column(Numeric(15, 2))
-    status = Column(String(50), nullable=False)
     tanggal_mulai = Column(Date)
+    target_selesai = Column(Date)
     tanggal_selesai = Column(Date)
-    dusun_id = Column(ForeignKey("dusun.id"), nullable=False)
+    progress = Column(Numeric(5, 2))
+    status = Column(String(30))
+    created_at = Column(DateTime)
+    updated_at = Column(DateTime)
 
-    dusun = relationship("Dusun", back_populates="pembangunans")
+    rt = relationship("RT", back_populates="pembangunan")
     dokumentasi_pembangunan = relationship("DokumentasiPembangunan", back_populates="pembangunan")
 
-class DokumentasiPembangunan(BaseModel):
+class DokumentasiPembangunan(Base):
     __tablename__ = "dokumentasi_pembangunan"
 
-    pembangunan_id = Column(ForeignKey("pembangunan.id"), nullable=False)
-    file_path = Column(String(255), nullable=False)
-    keterangan = Column(Text)
+    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
+    pembangunan_id = Column(ForeignKey("pembangunan.id"))
+    file_path = Column(String(255))
+    deskripsi = Column(Text)
+    uploaded_at = Column(DateTime)
 
     pembangunan = relationship("Pembangunan", back_populates="dokumentasi_pembangunan")

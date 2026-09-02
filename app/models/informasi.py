@@ -1,21 +1,34 @@
-from sqlalchemy import Column, String, ForeignKey, Text, DateTime
+import uuid
+from sqlalchemy import Column, String, ForeignKey, Text, DateTime, Uuid
 from sqlalchemy.orm import relationship
-from app.models.base_model import BaseModel
+from app.database.base import Base
 
-class Berita(BaseModel):
+class Berita(Base):
     __tablename__ = "berita"
 
-    judul = Column(String(200), nullable=False)
-    konten = Column(Text, nullable=False)
-    penulis_id = Column(ForeignKey("users.id"), nullable=False)
-    tanggal_publikasi = Column(DateTime(timezone=True), nullable=False)
+    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
+    judul = Column(String(200))
+    slug = Column(String(220))
+    konten = Column(Text)
+    thumbnail = Column(String(255))
+    author_id = Column(ForeignKey("users.id"))
+    status = Column(String(30))
+    published_at = Column(DateTime)
+    created_at = Column(DateTime)
+    updated_at = Column(DateTime)
 
-    penulis = relationship("User", back_populates="berita")
+    author = relationship("User", back_populates="berita")
 
-class Pengumuman(BaseModel):
+class Pengumuman(Base):
     __tablename__ = "pengumuman"
 
-    judul = Column(String(200), nullable=False)
-    konten = Column(Text, nullable=False)
-    tanggal_publikasi = Column(DateTime(timezone=True), nullable=False)
-    aktif_sampai = Column(DateTime(timezone=True))
+    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
+    judul = Column(String(200))
+    konten = Column(Text)
+    author_id = Column(ForeignKey("users.id"))
+    status = Column(String(30))
+    published_at = Column(DateTime)
+    created_at = Column(DateTime)
+    updated_at = Column(DateTime)
+
+    author = relationship("User", back_populates="pengumuman")
