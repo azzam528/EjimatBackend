@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.routers import health
+from app.routers import health, penduduk
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    openapi_url=f"{settings.API_PREFIX}/openapi.json",
     docs_url="/docs",
     redoc_url="/redoc"
 )
@@ -20,7 +20,8 @@ app.add_middleware(
 )
 
 # Register routers
-app.include_router(health.router, prefix=f"{settings.API_V1_STR}/health", tags=["health"])
+app.include_router(health.router, prefix=f"{settings.API_PREFIX}/health", tags=["health"])
+app.include_router(penduduk.router, prefix=f"{settings.API_PREFIX}/penduduk", tags=["penduduk"])
 
 @app.get("/")
 def root():
