@@ -1,4 +1,4 @@
-# EJIMAT Core — Backend
+# EJIMAT  — Backend
 
 Backend REST API untuk **EJIMAT Core Desa Cimenyan**, sebuah platform terpusat untuk pengelolaan dan integrasi data desa.
 
