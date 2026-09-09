@@ -1,19 +1,44 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 from sqlalchemy import text
+from sqlalchemy.orm import Session
+
 from app.database.database import get_db
 
-router = APIRouter()
+
+router = APIRouter(
+    prefix="/api/health",
+    tags=["Health"]
+)
+
 
 @router.get("")
 def health_check():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "message": "EJIMAT Backend is running"
+    }
+
 
 @router.get("/db")
-def health_check_db(db: Session = Depends(get_db)):
+def database_health(db: Session = Depends(get_db)):
     try:
-        # Try to execute a simple query to check the database connection
         db.execute(text("SELECT 1"))
-        return {"status": "database ok"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database connection failed: {str(e)}")
+
+        return {
+            "status": "ok",
+            "database": "connected"
+        }
+
+    except Exception:
+        raise HTTPException(
+            status_code=503,
+            detail="Database disconnected"
+        )
+
+
+@router.get("/info")
+def application_info():
+    return {
+        "application": "EJIMAT Core Desa Cimenyan",
+        "status": "running"
+    }
