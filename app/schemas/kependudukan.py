@@ -84,3 +84,30 @@ class KartuKeluargaResponse(KartuKeluargaBase):
     updated_at: Optional[datetime] = None
     
     model_config = ConfigDict(from_attributes=True)
+
+class KartuKeluargaUpdate(BaseModel):
+    no_kk: Optional[str] = None
+    kepala_keluarga_id: Optional[UUID] = None
+    alamat: Optional[str] = None
+    rt_id: Optional[UUID] = None
+
+
+class AnggotaKeluargaBase(BaseModel):
+    kk_id: UUID
+    penduduk_id: UUID
+    hubungan_keluarga: str
+
+
+class AnggotaKeluargaCreate(AnggotaKeluargaBase):
+    pass
+
+
+class AnggotaKeluargaUpdate(BaseModel):
+    hubungan_keluarga: Optional[str] = None
+
+
+class AnggotaKeluargaResponse(AnggotaKeluargaBase):
+    id: UUID
+    created_at: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True)

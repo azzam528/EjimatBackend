@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.routers import health, penduduk
+from app.routers.kartu_keluarga import (
+    router as kartu_keluarga_router
+)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -22,6 +25,9 @@ app.add_middleware(
 # Register routers
 app.include_router(health.router, prefix=f"{settings.API_PREFIX}/health", tags=["health"])
 app.include_router(penduduk.router, prefix=f"{settings.API_PREFIX}/penduduk", tags=["penduduk"])
+app.include_router(kartu_keluarga_router)
+
+
 
 @app.get("/")
 def root():
