@@ -5,6 +5,10 @@ from app.routers import health, penduduk
 from app.routers.kartu_keluarga import (
     router as kartu_keluarga_router
 )
+# pyrefly: ignore [missing-import]
+from app.routers.anggota_keluarga import (
+    router as anggota_keluarga_router
+)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -26,8 +30,7 @@ app.add_middleware(
 app.include_router(health.router, prefix=f"{settings.API_PREFIX}/health", tags=["health"])
 app.include_router(penduduk.router, prefix=f"{settings.API_PREFIX}/penduduk", tags=["penduduk"])
 app.include_router(kartu_keluarga_router)
-
-
+app.include_router(anggota_keluarga_router)
 
 @app.get("/")
 def root():
