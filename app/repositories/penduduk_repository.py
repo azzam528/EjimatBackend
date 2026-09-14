@@ -33,6 +33,27 @@ class PendudukRepository:
 
     def get_by_id(self, db: Session, penduduk_id: UUID) -> Penduduk | None:
         return db.query(Penduduk).filter(Penduduk.id == penduduk_id).first()
+    
+    def get_by_nik(
+            self,
+            db: Session,
+            nik: str
+        ) -> Penduduk | None:
+
+            return (
+                db.query(Penduduk)
+                .filter(Penduduk.nik == nik)
+                .first()
+            )
+
+
+    def get_all_for_duplicate_check(
+            self,
+            db: Session
+        ) -> list[Penduduk]:
+
+            return db.query(Penduduk).all()
+
 
     def create(self, db: Session, penduduk: Penduduk) -> Penduduk:
         db.add(penduduk)
@@ -48,3 +69,5 @@ class PendudukRepository:
     def delete(self, db: Session, penduduk: Penduduk) -> None:
         db.delete(penduduk)
         db.commit()
+
+   
