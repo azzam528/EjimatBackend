@@ -35,9 +35,22 @@ def get_penduduk(penduduk_id: UUID, db: Session = Depends(get_db)):
     return service.get_penduduk(db, penduduk_id)
 
 
-@router.post("", response_model=PendudukResponse, status_code=status.HTTP_201_CREATED)
-def create_penduduk(data: PendudukCreate, db: Session = Depends(get_db)):
-    return service.create_penduduk(db, data)
+@router.post(
+    "",
+    response_model=PendudukResponse,
+    status_code=status.HTTP_201_CREATED
+)
+def create_penduduk(
+    data: PendudukCreate,
+    force_save: bool = False,
+    db: Session = Depends(get_db)
+):
+
+    return service.create_penduduk(
+        db,
+        data,
+        force_save
+    )
 
 
 @router.put("/{penduduk_id}", response_model=PendudukResponse)
