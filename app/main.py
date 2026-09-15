@@ -12,6 +12,7 @@ from app.routers.anggota_keluarga import (
 from app.routers.duplicate_detection import (
     router as duplicate_detection_router
 )
+from app.routers.dusun import router as dusun_router
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_PREFIX}/openapi.json",
@@ -34,6 +35,7 @@ app.include_router(penduduk.router, prefix=f"{settings.API_PREFIX}/penduduk", ta
 app.include_router(kartu_keluarga_router)
 app.include_router(anggota_keluarga_router)
 app.include_router(duplicate_detection_router)
+app.include_router(dusun_router)
 
 @app.get("/")
 def root():
