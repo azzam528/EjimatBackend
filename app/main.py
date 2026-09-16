@@ -14,6 +14,7 @@ from app.routers.duplicate_detection import (
 )
 from app.routers.dusun import router as dusun_router
 from app.routers.rw import router as rw_router
+from app.routers.rt import router as rt_router
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_PREFIX}/openapi.json",
@@ -38,7 +39,7 @@ app.include_router(anggota_keluarga_router)
 app.include_router(duplicate_detection_router)
 app.include_router(dusun_router)
 app.include_router(rw_router)
-
+app.include_router(rt_router)
 
 @app.get("/")
 def root():
