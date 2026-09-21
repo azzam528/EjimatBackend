@@ -7,74 +7,46 @@ from app.models.kependudukan import AnggotaKeluarga
 
 class AnggotaKeluargaRepository:
 
-    @staticmethod
-    def get_all(db: Session):
-        return db.query(AnggotaKeluarga).all()
-
-    @staticmethod
-    def get_by_id(
+    def get_all(
+        self,
         db: Session,
-        anggota_id: UUID
+        kk_id: UUID | None = None,
+        penduduk_id: UUID | None = None,
+        skip: int = 0,
+        limit: int = 100,
     ):
+        query = db.query(AnggotaKeluarga)
+
+        if kk_id is not None:
+            query = query.filter(AnggotaKeluarga.kk_id == kk_id)
+
+        if penduduk_id is not None:
+            query = query.filter(AnggotaKeluarga.penduduk_id == penduduk_id)
+
+        return query.offset(skip).limit(limit).all()
+
+    def get_by_id(self, db: Session, anggota_id: UUID):
+        return (
+            db.query(AnggotaKeluarga).filter(AnggotaKeluarga.id == anggota_id).first()
+        )
+
+    def get_by_kk_and_penduduk(self, db: Session, kk_id: UUID, penduduk_id: UUID):
         return (
             db.query(AnggotaKeluarga)
             .filter(
-                AnggotaKeluarga.id == anggota_id
+                AnggotaKeluarga.kk_id == kk_id,
+                AnggotaKeluarga.penduduk_id == penduduk_id,
             )
             .first()
         )
 
-    @staticmethod
-    def get_by_kk_id(
-        db: Session,
-        kk_id: UUID
-    ):
-        return (
-            db.query(AnggotaKeluarga)
-            .filter(
-                AnggotaKeluarga.kk_id == kk_id
-            )
-            .all()
-        )
-
-    @staticmethod
-    def get_by_penduduk_id(
-        db: Session,
-        penduduk_id: UUID
-    ):
-        return (
-            db.query(AnggotaKeluarga)
-            .filter(
-                AnggotaKeluarga.penduduk_id == penduduk_id
-            )
-            .first()
-        )
-
-    @staticmethod
-    def create(
-        db: Session,
-        anggota: AnggotaKeluarga
-    ):
+    def create(self, db: Session, anggota: AnggotaKeluarga):
         db.add(anggota)
         db.commit()
         db.refresh(anggota)
 
         return anggota
 
-    @staticmethod
-    def update(
-        db: Session,
-        anggota: AnggotaKeluarga
-    ):
-        db.commit()
-        db.refresh(anggota)
-
-        return anggota
-
-    @staticmethod
-    def delete(
-        db: Session,
-        anggota: AnggotaKeluarga
-    ):
+    def delete(self, db: Session, anggota: AnggotaKeluarga):
         db.delete(anggota)
         db.commit()

@@ -1,209 +1,75 @@
+import uuid
+from datetime import datetime
 from uuid import UUID
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.models.kependudukan import (
-    AnggotaKeluarga,
-    KartuKeluarga,
-    Penduduk
-)
+from app.models.kependudukan import AnggotaKeluarga, KartuKeluarga, Penduduk
 
-from app.repositories.anggota_keluarga_repository import (
-    AnggotaKeluargaRepository
-)
+from app.repositories.anggota_keluarga_repository import AnggotaKeluargaRepository
+
+from app.schemas.kependudukan import AnggotaKeluargaCreate
 
 
 class AnggotaKeluargaService:
 
-    @staticmethod
-    def get_all(db: Session):
-        return AnggotaKeluargaRepository.get_all(db)
+    def __init__(self, repository: AnggotaKeluargaRepository | None = None):
+        self.repository = repository or AnggotaKeluargaRepository()
 
+    def list_anggota_keluarga(self, db: Session, **filters):
+        return self.repository.get_all(db, **filters)
 
-    @staticmethod
-    def get_by_id(
-        db: Session,
-        anggota_id: UUID
-    ):
+    def get_anggota_keluarga(self, db: Session, anggota_id: UUID):
+        anggota = self.repository.get_by_id(db, anggota_id)
 
-        anggota = (
-            AnggotaKeluargaRepository.get_by_id(
-                db,
-                anggota_id
-            )
-        )
-
-        if not anggota:
+        if anggota is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Anggota keluarga tidak ditemukan"
+                detail="Anggota keluarga not found",
             )
 
         return anggota
 
+    def create_anggota_keluarga(self, db: Session, data: AnggotaKeluargaCreate):
+        # Cek KK
+        kk = db.query(KartuKeluarga).filter(KartuKeluarga.id == data.kk_id).first()
 
-    @staticmethod
-    def get_by_kk_id(
-        db: Session,
-        kk_id: UUID
-    ):
-
-        kk = (
-            db.query(KartuKeluarga)
-            .filter(
-                KartuKeluarga.id == kk_id
-            )
-            .first()
-        )
-
-        if not kk:
+        if kk is None:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Kartu Keluarga tidak ditemukan"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Kartu Keluarga not found"
             )
 
-        return (
-            AnggotaKeluargaRepository.get_by_kk_id(
-                db,
-                kk_id
-            )
-        )
+        # Cek Penduduk
+        penduduk = db.query(Penduduk).filter(Penduduk.id == data.penduduk_id).first()
 
-
-    @staticmethod
-    def create(
-        db: Session,
-        anggota_data
-    ):
-
-        # =========================
-        # CEK KARTU KELUARGA
-        # =========================
-
-        kk = (
-            db.query(KartuKeluarga)
-            .filter(
-                KartuKeluarga.id ==
-                anggota_data.kk_id
-            )
-            .first()
-        )
-
-        if not kk:
+        if penduduk is None:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Kartu Keluarga tidak ditemukan"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Penduduk not found"
             )
 
-
-        # =========================
-        # CEK PENDUDUK
-        # =========================
-
-        penduduk = (
-            db.query(Penduduk)
-            .filter(
-                Penduduk.id ==
-                anggota_data.penduduk_id
-            )
-            .first()
+        # Cek apakah penduduk sudah menjadi anggota
+        existing = self.repository.get_by_kk_and_penduduk(
+            db, data.kk_id, data.penduduk_id
         )
 
-        if not penduduk:
+        if existing:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Penduduk tidak ditemukan"
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Penduduk is already a member of this Kartu Keluarga",
             )
-
-
-        # =========================
-        # CEK PENDUDUK SUDAH ADA
-        # DI KK LAIN ATAU BELUM
-        # =========================
-
-        existing_anggota = (
-            AnggotaKeluargaRepository
-            .get_by_penduduk_id(
-                db,
-                anggota_data.penduduk_id
-            )
-        )
-
-        if existing_anggota:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=(
-                    "Penduduk sudah terdaftar "
-                    "dalam Kartu Keluarga"
-                )
-            )
-
-
-        # =========================
-        # BUAT ANGGOTA
-        # =========================
 
         anggota = AnggotaKeluarga(
-            kk_id=anggota_data.kk_id,
-            penduduk_id=anggota_data.penduduk_id,
-            hubungan_keluarga=(
-                anggota_data.hubungan_keluarga
-            )
+            id=uuid.uuid4(),
+            kk_id=data.kk_id,
+            penduduk_id=data.penduduk_id,
+            hubungan_keluarga=data.hubungan_keluarga,
+            created_at=datetime.utcnow(),
         )
 
-        return AnggotaKeluargaRepository.create(
-            db,
-            anggota
-        )
+        return self.repository.create(db, anggota)
 
+    def delete_anggota_keluarga(self, db: Session, anggota_id: UUID):
+        anggota = self.get_anggota_keluarga(db, anggota_id)
 
-    @staticmethod
-    def update(
-        db: Session,
-        anggota_id: UUID,
-        anggota_data
-    ):
-
-        anggota = (
-            AnggotaKeluargaService.get_by_id(
-                db,
-                anggota_id
-            )
-        )
-
-        if anggota_data.hubungan_keluarga is not None:
-
-            anggota.hubungan_keluarga = (
-                anggota_data.hubungan_keluarga
-            )
-
-        return AnggotaKeluargaRepository.update(
-            db,
-            anggota
-        )
-
-
-    @staticmethod
-    def delete(
-        db: Session,
-        anggota_id: UUID
-    ):
-
-        anggota = (
-            AnggotaKeluargaService.get_by_id(
-                db,
-                anggota_id
-            )
-        )
-
-        AnggotaKeluargaRepository.delete(
-            db,
-            anggota
-        )
-
-        return {
-            "message": (
-                "Anggota keluarga berhasil dihapus"
-            )
-        }
+        self.repository.delete(db, anggota)
