@@ -30,3 +30,30 @@ class JenisLayananResponse(JenisLayananBase):
     updated_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+class PengajuanLayananBase(BaseModel):
+    jenis_layanan_id: UUID
+    penduduk_id: UUID
+    catatan_pemohon: Optional[str] = None
+
+
+class PengajuanLayananCreate(PengajuanLayananBase):
+    pass
+
+
+class PengajuanLayananUpdate(BaseModel):
+    status: Optional[str] = None
+    catatan_petugas: Optional[str] = None
+
+
+class PengajuanLayananResponse(PengajuanLayananBase):
+    id: UUID
+    nomor_pengajuan: str
+    status: str
+    catatan_petugas: Optional[str] = None
+    diajukan_at: Optional[datetime] = None
+    selesai_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True)
