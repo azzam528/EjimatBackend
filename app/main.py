@@ -12,6 +12,7 @@ from app.routers.dusun import router as dusun_router
 from app.routers.rw import router as rw_router
 from app.routers.rt import router as rt_router
 from app.routers.pengajuan_layanan import router as pengajuan_layanan_router
+from app.routers.pengaduan import router as pengaduan_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -44,6 +45,7 @@ app.include_router(rw_router)
 app.include_router(rt_router)
 app.include_router(jenis_layanan_router)
 app.include_router(pengajuan_layanan_router)
+app.include_router(pengaduan_router)
 
 
 @app.get("/")
