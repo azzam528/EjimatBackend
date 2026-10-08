@@ -29,7 +29,9 @@ service = PengaduanService()
 )
 def list_pengaduan(
     penduduk_id: UUID | None = None,
+    rt_id: UUID | None = None,
     status: str | None = None,
+    kategori: str | None = None,
     skip: int = Query(
         default=0,
         ge=0,
@@ -41,11 +43,12 @@ def list_pengaduan(
     ),
     db: Session = Depends(get_db),
 ):
-
     return service.list_pengaduan(
         db,
         penduduk_id=penduduk_id,
+        rt_id=rt_id,
         status=status,
+        kategori=kategori,
         skip=skip,
         limit=limit,
     )
@@ -59,7 +62,6 @@ def get_pengaduan(
     pengaduan_id: UUID,
     db: Session = Depends(get_db),
 ):
-
     return service.get_pengaduan(
         db,
         pengaduan_id,
@@ -75,7 +77,6 @@ def create_pengaduan(
     data: PengaduanCreate,
     db: Session = Depends(get_db),
 ):
-
     return service.create_pengaduan(
         db,
         data,
@@ -91,7 +92,6 @@ def update_pengaduan(
     data: PengaduanUpdate,
     db: Session = Depends(get_db),
 ):
-
     return service.update_pengaduan(
         db,
         pengaduan_id,
