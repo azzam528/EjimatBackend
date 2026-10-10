@@ -14,6 +14,9 @@ from app.routers.rt import router as rt_router
 from app.routers.pengajuan_layanan import router as pengajuan_layanan_router
 from app.routers.pengaduan import router as pengaduan_router
 from app.routers.dokumen_pengajuan import router as dokumen_pengajuan_router
+from app.routers.lampiran_pengaduan import (
+    router as lampiran_pengaduan_router,
+)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -48,6 +51,7 @@ app.include_router(jenis_layanan_router)
 app.include_router(pengajuan_layanan_router)
 app.include_router(pengaduan_router)
 app.include_router(dokumen_pengajuan_router)
+app.include_router(lampiran_pengaduan_router)
 
 
 @app.get("/")

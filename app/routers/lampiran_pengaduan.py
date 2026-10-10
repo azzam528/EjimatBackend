@@ -1,4 +1,4 @@
-```python
+
 from uuid import UUID
 
 from fastapi import (
@@ -80,4 +80,3 @@ def delete_lampiran(
         db,
         lampiran_id,
     )
-```
