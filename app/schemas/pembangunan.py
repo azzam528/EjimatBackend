@@ -1,4 +1,3 @@
-```python
 from uuid import UUID
 from datetime import date, datetime
 from decimal import Decimal
@@ -48,4 +47,3 @@ class PembangunanResponse(BaseModel):
     updated_at: datetime | None = None
 
     model_config = ConfigDict(from_attributes=True)
-```
