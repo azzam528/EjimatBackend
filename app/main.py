@@ -5,6 +5,7 @@ from app.routers import health, penduduk
 from app.routers.kartu_keluarga import router as kartu_keluarga_router
 
 # pyrefly: ignore [missing-import]
+from app.routers.informasi import berita_router, pengumuman_router
 from app.routers.anggota_keluarga import router as anggota_keluarga_router
 from app.routers.duplicate_detection import router as duplicate_detection_router
 from app.routers.jenis_layanan import router as jenis_layanan_router
@@ -52,6 +53,8 @@ app.include_router(pengajuan_layanan_router)
 app.include_router(pengaduan_router)
 app.include_router(dokumen_pengajuan_router)
 app.include_router(lampiran_pengaduan_router)
+app.include_router(berita_router)
+app.include_router(pengumuman_router)
 
 
 @app.get("/")
