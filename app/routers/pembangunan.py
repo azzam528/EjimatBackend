@@ -1,4 +1,3 @@
-```python
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
@@ -11,7 +10,6 @@ from app.schemas.pembangunan import (
     PembangunanUpdate,
 )
 from app.services.pembangunan_service import PembangunanService
-
 
 router = APIRouter(
     prefix="/api/pembangunan",
@@ -89,4 +87,3 @@ def delete_pembangunan(
         db,
         pembangunan_id,
     )
-```
