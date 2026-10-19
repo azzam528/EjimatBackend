@@ -20,6 +20,7 @@ from app.routers.lampiran_pengaduan import (
 )
 from app.routers.pembangunan import router as pembangunan_router
 from app.routers.auth import router as auth_router
+from app.routers.admin import router as admin_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -59,6 +60,7 @@ app.include_router(berita_router)
 app.include_router(pengumuman_router)
 app.include_router(pembangunan_router)
 app.include_router(auth_router)
+app.include_router(admin_router)
 
 
 @app.get("/")
