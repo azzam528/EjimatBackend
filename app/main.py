@@ -62,6 +62,7 @@ app.include_router(pengumuman_router)
 app.include_router(pembangunan_router)
 app.include_router(auth_router)
 app.include_router(admin_router)
+app.include_router(users_router)
 
 
 @app.get("/")
