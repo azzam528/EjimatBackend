@@ -21,6 +21,7 @@ from app.routers.lampiran_pengaduan import (
 from app.routers.pembangunan import router as pembangunan_router
 from app.routers.auth import router as auth_router
 from app.routers.admin import router as admin_router
+from app.routers.users import router as users_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
